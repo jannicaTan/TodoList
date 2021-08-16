@@ -23,7 +23,7 @@
       <!-- 今日任务 -->
       <el-col :span="8"
         ><h3 class="el-icon-paperclip">今日任务：</h3>
-        <ul v-for="(item, i) in items" :key="i">
+        <!-- <ul v-for="(item, i) in items" :key="i">
           <template v-if="!item.isFinished">
             <li>
               {{ item.label }}
@@ -48,8 +48,16 @@
                 ></el-button>
               </el-popconfirm>
             </li>
-          </template></ul
-      ></el-col>
+          </template>
+        </ul> -->
+        <check-table :items="items">
+          <!-- <template v-for="item in items">
+            <template v-if="!item.isFinished">
+              {{ item.label }}
+            </template>
+          </template> -->
+        </check-table>
+      </el-col>
       <el-divider direction="vertical"></el-divider>
       <!-- 今日已完成 -->
       <el-col :span="8"
@@ -57,18 +65,29 @@
           <h3 span class="el-icon-finished">今日已完成：</h3>
           <el-button size="mini" @click="delAll()">全部删除</el-button>
         </div>
-        <ul v-for="(item, i) in items" :key="i">
+        <!-- <ul v-for="(item, i) in items" :key="i">
           <template v-if="item.isFinished"
             ><li>{{ item.label }}</li></template
           >
-        </ul>
+        </ul> -->
+        <check-table>
+          <template v-for="item in items">
+            <template v-if="item.isFinished">
+              {{ item.label }}
+            </template>
+          </template>
+        </check-table>
       </el-col>
     </el-row>
   </div>
 </template>
 
 <script>
+import CheckTable from "@/components/CheckTable";
 export default {
+  components: {
+    CheckTable,
+  },
   data() {
     return {
       title: "Let's Make A List For Today!",
@@ -89,13 +108,20 @@ export default {
       this.items.push({ label: this.taskName, isFinished: false });
     },
     // 删除任务
-    del(item) {
-      this.items.splice(item, 1);
-    },
-    delAll(){
-        if(this.items!=null){
-                this.items.splice(0,this.items.length)
+    // del(item) {
+    //   this.items.splice(item, 1);
+    // },
+    delAll() {
+      //利用for循环来筛选已完成的任务
+      const items = this.items;
+      if (items != null) {
+        for (var i = 0; i < items.length; i++) {
+          if (items[i].isFinished == true) {
+            items.splice(i, 1);
+            i--;
+          }
         }
+      }
     },
     //任务状态修改
     finish(item) {
@@ -134,6 +160,10 @@ h1 {
 .finished {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+}
+.el-button--mini,
+.el-button--mini.is-round {
+  height: 30px;
 }
 </style>
-
