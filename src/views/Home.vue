@@ -22,33 +22,6 @@
       <!-- 今日任务 -->
       <el-col :span="8">
         <h3 class="el-icon-paperclip">今日任务：</h3>
-        <!-- <ul v-for="(item, i) in items" :key="i">
-          <template v-if="!item.isFinished">
-            <li>
-              {{ item.label }}
-              <el-button
-                size="small"
-                icon="el-icon-check"
-                icon-color="red"
-                @click="finish(item)"
-              ></el-button>
-              <el-popconfirm
-                confirm-button-text="好的"
-                @confirm="del(item)"
-                cancel-button-text="不用了"
-                icon="el-icon-info"
-                icon-color="red"
-                title="这是一段内容确定删除吗？"
-              >
-                <el-button
-                  size="small"
-                  slot="reference"
-                  icon="el-icon-delete"
-                ></el-button>
-              </el-popconfirm>
-            </li>
-          </template>
-        </ul> -->
         <check-table :items="items"></check-table>
       </el-col>
       <el-divider direction="vertical"></el-divider>
@@ -58,19 +31,12 @@
           <h3 span class="el-icon-finished">今日已完成：</h3>
           <el-button size="mini" @click="delAll()">全部删除</el-button>
         </div>
-        <!-- <ul v-for="(item, i) in items" :key="i">
-          <template v-if="item.isFinished"
-            ><li>{{ item.label }}</li></template
-          >
-        </ul> -->
-        <check-table :items="items">
+        <check-table :items="finishList"> </check-table>
           <!-- 删掉这里就不能完成任务 -->
           <template v-for="item in items">
             <template v-if="!item.isFinished">
-              {{ item.label }}
             </template>
           </template>
-          </check-table>
       </el-col>
     </el-row>
   </div>
@@ -87,24 +53,24 @@ export default {
       title: "Let's Make A List For Today!",
       taskName: "",
       items: [],
+      finishList: [],
     };
   },
   created() {
     let list = JSON.parse(sessionStorage.getItem("taskList"));
+    let finish = JSON.parse(sessionStorage.getItem("finishList"));
     console.log(list);
-    if (list.length > 0) {
+    console.log("finish", finish);
+    if (list.length > 0 || finish > 0) {
       this.items = list;
-      return this.items;
+      this.finishList = finish;
+      return this.items, this.finishList;
     }
   },
   methods: {
     addTask() {
-      this.items.push({ label: this.taskName, isFinished: false});
+      this.items.push({ label: this.taskName, isFinished: false });
     },
-    // 删除任务
-    // del(item) {
-    //   this.items.splice(item, 1);
-    // },
     delAll() {
       //利用for循环来筛选已完成的任务
       const items = this.items;
@@ -117,14 +83,30 @@ export default {
         }
       }
     },
-    //任务状态修改
-    finish(item) {
-      item.isFinished = !item.isFinished;
-    },
+    // update() {
+    //   let items=this.items;
+    //   let finishList=this.finishList;
+    //   items.forEach((element, index) => {
+    //     if (element.isFinished == true) {
+    //       finishList.push(element);
+    //       items.splice(index, 1);
+    //     }
+    //   });
+    // },
   },
   //有数据刷新进行更新存储
   beforeUpdate() {
+    let items = this.items;
+    let finishList = this.finishList;
+    console.log(finishList)
+    items.forEach((element, index) => {
+      if (element.isFinished == true) {
+        finishList.push(element);
+        items.splice(index, 1);
+      }
+    });
     sessionStorage.setItem("taskList", JSON.stringify(this.items));
+    sessionStorage.setItem("finishList", JSON.stringify(this.finishList));
   },
 };
 </script>

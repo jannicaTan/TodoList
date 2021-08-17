@@ -56,7 +56,7 @@ export default {
       this.items.splice(index, 1);
     },
     finish(row) {
-      row.isFinished = !row.isFinished;
+      row.isFinished = true;
     },
   },
 };
