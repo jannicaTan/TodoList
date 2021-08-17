@@ -8,17 +8,16 @@
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection"></el-table-column>
-      <!-- <el-table-column label="任务名称" v-for="(item,i) in items" :key="i">{{ item.label }}</el-table-column> -->
       <el-table-column label="任务名称" prop="label"></el-table-column>
       <!-- 利用prop可以展示想要的对应值 -->
-      <el-table-column label="操作" :key="item">
+      <el-table-column label="操作">
         <template slot-scope="scope">
           <span>
             <el-button
               size="small"
               icon="el-icon-check"
-              icon-color="red"
-              @click="finish(scope)"
+              @click="finish(scope.row)"
+              v-if="scope.row.isFinished==false"
             ></el-button>
             <el-button
               size="small"
@@ -52,14 +51,12 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
-    del(item) {
-    //   console.log(item);
-      //scope里面有三个参数
-      console.log(item.$index)
-      this.items.splice(item, 1);
+    del(index) {
+      //scope中：row-本行元素，$index-本行索引
+      this.items.splice(index, 1);
     },
-    finish(item) {
-      item.isFinished = !item.isFinished;
+    finish(row) {
+      row.isFinished = !row.isFinished;
     },
   },
 };

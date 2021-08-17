@@ -18,11 +18,10 @@
         ><el-button type="primary" @click="addTask()">Add</el-button></el-col
       >
     </el-row>
-
     <el-row class="taskList" type="flex" justify="center">
       <!-- 今日任务 -->
-      <el-col :span="8"
-        ><h3 class="el-icon-paperclip">今日任务：</h3>
+      <el-col :span="8">
+        <h3 class="el-icon-paperclip">今日任务：</h3>
         <!-- <ul v-for="(item, i) in items" :key="i">
           <template v-if="!item.isFinished">
             <li>
@@ -50,13 +49,7 @@
             </li>
           </template>
         </ul> -->
-        <check-table :items="items">
-          <!-- <template v-for="item in items">
-            <template v-if="!item.isFinished">
-              {{ item.label }}
-            </template>
-          </template> -->
-        </check-table>
+        <check-table :items="items"></check-table>
       </el-col>
       <el-divider direction="vertical"></el-divider>
       <!-- 今日已完成 -->
@@ -70,13 +63,14 @@
             ><li>{{ item.label }}</li></template
           >
         </ul> -->
-        <check-table>
+        <check-table :items="items">
+          <!-- 删掉这里就不能完成任务 -->
           <template v-for="item in items">
-            <template v-if="item.isFinished">
+            <template v-if="!item.isFinished">
               {{ item.label }}
             </template>
           </template>
-        </check-table>
+          </check-table>
       </el-col>
     </el-row>
   </div>
@@ -105,7 +99,7 @@ export default {
   },
   methods: {
     addTask() {
-      this.items.push({ label: this.taskName, isFinished: false });
+      this.items.push({ label: this.taskName, isFinished: false});
     },
     // 删除任务
     // del(item) {
