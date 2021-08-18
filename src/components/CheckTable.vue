@@ -1,8 +1,6 @@
 <template>
   <div class="check-table">
-    <el-button type="primary" @click="onMove">
-      批量完成
-    </el-button>
+    <slot name="add-btn" v-bind:select="Selection"></slot>
     <el-table
       ref="multipleTable"
       :data="items"
@@ -11,8 +9,8 @@
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection"></el-table-column>
-      <el-table-column label="任务名称" prop="label"></el-table-column>
       <!-- 利用prop可以展示想要的对应值 -->
+      <el-table-column label="任务名称" prop="label"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <span>
@@ -38,7 +36,7 @@ export default {
   props: { items: { type: Array, default: () => [] } },
   data() {
     return {
-      multipleSelection: [],
+      Selection: [],
     };
   },
   methods: {
@@ -52,7 +50,7 @@ export default {
       }
     },
     handleSelectionChange(val) {
-      this.multipleSelection = val;
+      this.Selection = val;
     },
     del(index) {
       //scope中：row-本行元素，$index-本行索引
@@ -60,13 +58,15 @@ export default {
     },
     finish(row) {
       row.isFinished = true;
+      this.$emit("finish-row", row);
     },
     onMove() {
-      let selectItem = this.multipleSelection.map((item) => ({
+      let selectItem = this.Selection.map((item) => ({
         ...item,
         isFinished: true,
       }));
       this.$emit("to-move", selectItem);
+      console.log(selectItem);
     },
   },
 };

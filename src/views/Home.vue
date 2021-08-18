@@ -22,21 +22,31 @@
       <!-- 今日任务 -->
       <el-col :span="8">
         <h3 class="el-icon-paperclip">今日任务：</h3>
-        <check-table :items="items" @to-move="toMove"> </check-table>
+        <check-table :items="items" @finish-row="finish">
+          <template v-slot:add-btn="select">
+            <el-button size="mini" @click="checkMove(select)"
+              >批量添加</el-button
+            >
+            <el-button size="mini" @click="del(items, select)"
+              >批量删除</el-button
+            >
+          </template>
+        </check-table>
       </el-col>
       <el-divider direction="vertical"></el-divider>
       <!-- 今日已完成 -->
-      <el-col :span="8"
-        ><div class="finished">
+      <el-col :span="8">
+        <div class="finished">
           <h3 span class="el-icon-finished">今日已完成：</h3>
-          <el-button size="mini" @click="delAll()">全部删除</el-button>
+          <!-- <el-button size="mini" @click="delAll()">全部删除</el-button> -->
         </div>
-        <check-table :items="finishList"> </check-table>
-        <!-- 删掉这里就不能完成任务 -->
-        <!-- <template v-for="item in items">
-            <template v-if="!item.isFinished">
-            </template>
-          </template> -->
+        <check-table :items="finishList">
+          <template v-slot:add-btn="select">
+            <el-button size="mini" @click="del(finishList, select)"
+              >批量删除</el-button
+            >
+          </template>
+        </check-table>
       </el-col>
     </el-row>
   </div>
@@ -58,52 +68,70 @@ export default {
   },
   created() {
     let list = JSON.parse(sessionStorage.getItem("taskList"));
-    let finish = JSON.parse(sessionStorage.getItem("finishList"));
-    if (list.length > 0 || finish > 0) {
+    let finishList = JSON.parse(sessionStorage.getItem("finishList"));
+    if (list.length > 0 || finishList.length > 0) {
       this.items = list;
-      this.finishList = finish;
-      return this.items, this.finishList;
+      this.finishList = finishList;
     }
   },
   methods: {
+    //添加任务
     addTask() {
-      this.items.push({ label: this.taskName, isFinished: false });
+      var id = new Date().getSeconds();
+      this.items.push({
+        label: this.taskName,
+        isFinished: false,
+        id: this.taskName + id,
+      });
       this.taskName = "";
     },
-    delAll() {
-      //利用for循环来筛选已完成的任务
-      const items = this.finishList;
-      if (items != null) {
-        for (var i = 0; i < items.length; i++) {
-          if (items[i].isFinished == true) {
-            items.splice(i, 1);
-            i--;
-          }
+    //批量添加——每次只可移动一个
+    checkMove(a) {
+      // filter筛选出符合条件的返回新数组，find用于搜索条件
+      let { select } = a;
+      console.log("select:", select);
+      if (select.length > 0) {
+        this.items = this.items.filter((item) => {
+          return select.find((item1) => {
+            return item.label != item1.label;
+          });
+        });
+        this.finishList = this.finishList.concat(select);
+        this.finishList.map((item) => (item.isFinished = true));
+      }
+    },
+    //批量删除——没想到如何同一个方法给两个组件都用，利用data代表此时的list,太繁琐
+    del(data, a) {
+      let { select } = a;
+      console.log("select:",select)
+      if (data == this.items) {
+        if (select.length > 0) {
+          let items = this.items.filter((item) => {
+            return select.find((item1) => {
+              return item.id != item1.id;
+            });
+          });
+          this.items=items
+          console.log(items)
+        }
+      } else if (data == this.finishList) {
+        if (select.length > 0) {
+          this.finishList = this.finishList.filter((item) => {
+            return select.find((item1) => {
+              return item.label != item1.label;
+            });
+          });
         }
       }
     },
-    toMove(a) {
-      console.log("this.items:", this.items);
-      this.items = this.items.filter((item) => {
-        return a.every((item1) => {
-          item.label = item1.label && item.isFinished != item1.isFinished;
-        });
-      });
-      this.finishList = this.finishList.concat(a);
-      console.log(this.finishList, this.items);
+    //点击对勾按钮，改变任务状态
+    finish(row) {
+      this.finishList.push(row);
+      this.items.filter((item) => item.isFinished == false);
     },
   },
   //有数据刷新进行更新存储
   beforeUpdate() {
-    // let items = this.items;
-    // let finishList = this.finishList;
-    // console.log(finishList)
-    // items.map((element, index) => {
-    //   if (element.isFinished == true) {
-    //     finishList.push(element);
-    //     items.splice(index, 1);
-    //   }
-    // });
     sessionStorage.setItem("taskList", JSON.stringify(this.items));
     sessionStorage.setItem("finishList", JSON.stringify(this.finishList));
   },
