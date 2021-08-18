@@ -22,7 +22,7 @@
       <!-- 今日任务 -->
       <el-col :span="8">
         <h3 class="el-icon-paperclip">今日任务：</h3>
-        <check-table :items="items"></check-table>
+        <check-table :items="items" @to-move="toMove"> </check-table>
       </el-col>
       <el-divider direction="vertical"></el-divider>
       <!-- 今日已完成 -->
@@ -32,11 +32,11 @@
           <el-button size="mini" @click="delAll()">全部删除</el-button>
         </div>
         <check-table :items="finishList"> </check-table>
-          <!-- 删掉这里就不能完成任务 -->
-          <template v-for="item in items">
+        <!-- 删掉这里就不能完成任务 -->
+        <!-- <template v-for="item in items">
             <template v-if="!item.isFinished">
             </template>
-          </template>
+          </template> -->
       </el-col>
     </el-row>
   </div>
@@ -59,8 +59,6 @@ export default {
   created() {
     let list = JSON.parse(sessionStorage.getItem("taskList"));
     let finish = JSON.parse(sessionStorage.getItem("finishList"));
-    console.log(list);
-    console.log("finish", finish);
     if (list.length > 0 || finish > 0) {
       this.items = list;
       this.finishList = finish;
@@ -70,10 +68,11 @@ export default {
   methods: {
     addTask() {
       this.items.push({ label: this.taskName, isFinished: false });
+      this.taskName = "";
     },
     delAll() {
       //利用for循环来筛选已完成的任务
-      const items = this.items;
+      const items = this.finishList;
       if (items != null) {
         for (var i = 0; i < items.length; i++) {
           if (items[i].isFinished == true) {
@@ -83,28 +82,28 @@ export default {
         }
       }
     },
-    // update() {
-    //   let items=this.items;
-    //   let finishList=this.finishList;
-    //   items.forEach((element, index) => {
-    //     if (element.isFinished == true) {
-    //       finishList.push(element);
-    //       items.splice(index, 1);
-    //     }
-    //   });
-    // },
+    toMove(a) {
+      console.log("this.items:", this.items);
+      this.items = this.items.filter((item) => {
+        return a.every((item1) => {
+          item.label = item1.label && item.isFinished != item1.isFinished;
+        });
+      });
+      this.finishList = this.finishList.concat(a);
+      console.log(this.finishList, this.items);
+    },
   },
   //有数据刷新进行更新存储
   beforeUpdate() {
-    let items = this.items;
-    let finishList = this.finishList;
-    console.log(finishList)
-    items.forEach((element, index) => {
-      if (element.isFinished == true) {
-        finishList.push(element);
-        items.splice(index, 1);
-      }
-    });
+    // let items = this.items;
+    // let finishList = this.finishList;
+    // console.log(finishList)
+    // items.map((element, index) => {
+    //   if (element.isFinished == true) {
+    //     finishList.push(element);
+    //     items.splice(index, 1);
+    //   }
+    // });
     sessionStorage.setItem("taskList", JSON.stringify(this.items));
     sessionStorage.setItem("finishList", JSON.stringify(this.finishList));
   },

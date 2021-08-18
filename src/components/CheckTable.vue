@@ -1,5 +1,8 @@
 <template>
   <div class="check-table">
+    <el-button type="primary" @click="onMove">
+      批量完成
+    </el-button>
     <el-table
       ref="multipleTable"
       :data="items"
@@ -17,7 +20,7 @@
               size="small"
               icon="el-icon-check"
               @click="finish(scope.row)"
-              v-if="scope.row.isFinished==false"
+              v-if="scope.row.isFinished == false"
             ></el-button>
             <el-button
               size="small"
@@ -57,6 +60,13 @@ export default {
     },
     finish(row) {
       row.isFinished = true;
+    },
+    onMove() {
+      let selectItem = this.multipleSelection.map((item) => ({
+        ...item,
+        isFinished: true,
+      }));
+      this.$emit("to-move", selectItem);
     },
   },
 };
