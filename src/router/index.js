@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
+import Tomato from '@/views/Tomato/Tomato'
 
 Vue.use(VueRouter)
 
@@ -10,6 +11,11 @@ const routes = [
     name: 'Home',
     component: Home
   },
+  {
+    path:'/tomato',
+    name:"tomato",
+    component:Tomato
+  }
 ]
 
 const router = new VueRouter({

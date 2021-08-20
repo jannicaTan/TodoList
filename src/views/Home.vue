@@ -38,13 +38,12 @@
       <el-col :span="8">
         <div class="finished">
           <h3 span class="el-icon-finished">今日已完成：</h3>
-          <!-- <el-button size="mini" @click="delAll()">全部删除</el-button> -->
         </div>
         <check-table :items="finishList">
           <template v-slot:add-btn="select">
-            <el-button size="mini" @click="del(finishList, select)"
-              >批量删除</el-button
-            >
+            <el-button size="mini" @click="del(finishList, select)">
+              批量删除
+            </el-button>
           </template>
         </check-table>
       </el-col>
@@ -103,7 +102,7 @@ export default {
     //批量删除——没想到如何同一个方法给两个组件都用，利用data代表此时的list,太繁琐
     del(data, a) {
       let { select } = a;
-      console.log("select:",select)
+      console.log("select:", select);
       if (data == this.items) {
         if (select.length > 0) {
           let items = this.items.filter((item) => {
@@ -111,8 +110,8 @@ export default {
               return item.id != item1.id;
             });
           });
-          this.items=items
-          console.log(items)
+          this.items = items;
+          console.log(items);
         }
       } else if (data == this.finishList) {
         if (select.length > 0) {
