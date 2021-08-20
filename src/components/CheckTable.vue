@@ -57,17 +57,18 @@ export default {
       this.items.splice(index, 1);
     },
     finish(row) {
+      console.log(row)
       row.isFinished = true;
       this.$emit("finish-row", row);
     },
-    onMove() {
-      let selectItem = this.Selection.map((item) => ({
-        ...item,
-        isFinished: true,
-      }));
-      this.$emit("to-move", selectItem);
-      console.log(selectItem);
-    },
+    // onMove() {
+    //   let selectItem = this.Selection.map((item) => ({
+    //     ...item,
+    //     isFinished: true,
+    //   }));
+    //   this.$emit("to-move", selectItem);
+    //   console.log("selectItem:",selectItem);
+    // },
   },
 };
 </script>

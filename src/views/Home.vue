@@ -14,22 +14,22 @@
           clearable
         ></el-input>
       </el-col>
-      <el-col :span="1" :offset="1"
-        ><el-button type="primary" @click="addTask()">Add</el-button></el-col
-      >
+      <el-col :span="1" :offset="1">
+        <el-button type="primary" @click="addTask()">Add</el-button>
+      </el-col>
     </el-row>
     <el-row class="taskList" type="flex" justify="center">
       <!-- 今日任务 -->
       <el-col :span="8">
         <h3 class="el-icon-paperclip">今日任务：</h3>
-        <check-table :items="items" @finish-row="finish">
+        <check-table :items="items" @finish-row="finish" @to-move="move">
           <template v-slot:add-btn="select">
-            <el-button size="mini" @click="checkMove(select)"
-              >批量添加</el-button
-            >
-            <el-button size="mini" @click="del(items, select)"
-              >批量删除</el-button
-            >
+            <el-button size="mini" @click="checkMove(select)">
+              批量添加
+            </el-button>
+            <el-button size="mini" @click="del(items, select)">
+              批量删除
+            </el-button>
           </template>
         </check-table>
       </el-col>
@@ -84,16 +84,17 @@ export default {
       });
       this.taskName = "";
     },
-    //批量添加——每次只可移动一个
     checkMove(a) {
       // filter筛选出符合条件的返回新数组，find用于搜索条件
       let { select } = a;
       console.log("select:", select);
       if (select.length > 0) {
+        let selectList = select.map((item) => item.id);
         this.items = this.items.filter((item) => {
-          return select.find((item1) => {
-            return item.label != item1.label;
-          });
+          return !selectList.includes(item.id);
+          // return select.find((item1) => {
+          //   return item.label != item1.label;
+          // });
         });
         this.finishList = this.finishList.concat(select);
         this.finishList.map((item) => (item.isFinished = true));
@@ -105,10 +106,13 @@ export default {
       console.log("select:", select);
       if (data == this.items) {
         if (select.length > 0) {
+          // 利用map把选中的组合成一个数组，然后filter遍历出不包含的元素返回
+          let selectList = select.map((item) => item.id);
           let items = this.items.filter((item) => {
-            return select.find((item1) => {
-              return item.id != item1.id;
-            });
+            return !selectList.includes(item.id);
+            // return !select.find((item1) => {
+            //   return item.label === item1.label;
+            // });
           });
           this.items = items;
           console.log(items);
@@ -116,8 +120,8 @@ export default {
       } else if (data == this.finishList) {
         if (select.length > 0) {
           this.finishList = this.finishList.filter((item) => {
-            return select.find((item1) => {
-              return item.label != item1.label;
+            return !select.find((item1) => {
+              return item.id === item1.id;
             });
           });
         }
@@ -127,6 +131,9 @@ export default {
     finish(row) {
       this.finishList.push(row);
       this.items.filter((item) => item.isFinished == false);
+    },
+    move(row) {
+      console.log(row);
     },
   },
   //有数据刷新进行更新存储
