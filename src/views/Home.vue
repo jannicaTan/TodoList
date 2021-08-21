@@ -1,7 +1,7 @@
 <template>
   <div class="hello">
     <el-row class="bg_img" type="flex" justify="center">
-      <img src="../assets/bg.jpeg" />
+      <img src="../assets/bg.jpeg" @click="toTomato()">
     </el-row>
     <div><h1 v-text="title" class="el-icon-ice-tea"></h1></div>
     <!-- 输入任务 -->
@@ -74,6 +74,11 @@ export default {
     }
   },
   methods: {
+    toTomato() {
+      this.$router.push({
+        path:'/tomato',
+      });
+    },
     //添加任务
     addTask() {
       var id = new Date().getSeconds();
@@ -152,6 +157,7 @@ h1 {
 }
 .bg_img {
   margin: 20px;
+  height:350px;
 }
 .taskList {
   margin-top: 50px;

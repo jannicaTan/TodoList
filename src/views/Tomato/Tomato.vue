@@ -1,5 +1,6 @@
 <template>
   <div class="tomato-container">
+    <router-link :to="{path:'/'}"><el-button >回去做任务！</el-button></router-link>
     <div class="tomato-title el-icon-alarm-clock">
       Mindful Clock
     </div>
