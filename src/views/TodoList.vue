@@ -1,56 +1,61 @@
 <template>
-  <div class="hello">
+  <div class="todo-list-container">
     <el-row class="bg_img" type="flex" justify="center">
-      <img src="../assets/bg.jpeg" @click="toTomato()">
+      <img src="../assets/bg.jpeg" @click="toTomato()" />
     </el-row>
-    <div><h1 v-text="title" class="el-icon-ice-tea"></h1></div>
+    <div class="todo-list-title">
+      <h1 v-text="title" class="el-icon-ice-tea"></h1>
+    </div>
     <!-- 输入任务 -->
-    <el-row class="input-btn" type="flex" justify="center">
-      <el-col :span="8">
-        <el-input
-          prefix-icon="el-icon-edit"
-          placeholder="请输入今日任务"
-          v-model="taskName"
-          clearable
-        ></el-input>
-      </el-col>
-      <el-col :span="1" :offset="1">
-        <el-button type="primary" @click="addTask()">Add</el-button>
-      </el-col>
-    </el-row>
-    <el-row class="taskList" type="flex" justify="center">
-      <!-- 今日任务 -->
-      <el-col :span="8">
-        <h3 class="el-icon-paperclip">今日任务：</h3>
-        <check-table :items="items" @finish-row="finish" @to-move="move">
-          <template v-slot:add-btn="select">
-            <el-button size="mini" @click="checkMove(select)">
-              批量添加
-            </el-button>
-            <el-button size="mini" @click="del(items, select)">
-              批量删除
-            </el-button>
-          </template>
-        </check-table>
-      </el-col>
-      <el-divider direction="vertical"></el-divider>
-      <!-- 今日已完成 -->
-      <el-col :span="8">
-        <div class="finished">
-          <h3 span class="el-icon-finished">今日已完成：</h3>
-        </div>
-        <check-table :items="finishList">
-          <template v-slot:add-btn="select">
-            <el-button size="mini" @click="del(finishList, select)">
-              批量删除
-            </el-button>
-          </template>
-        </check-table>
-      </el-col>
-    </el-row>
+    <div class="todo-list-input">
+      <el-row class="input-btn" type="flex" justify="center">
+        <el-col :span="8">
+          <el-input
+            prefix-icon="el-icon-edit"
+            placeholder="请输入今日任务"
+            v-model="taskName"
+            clearable
+          ></el-input>
+        </el-col>
+        <el-col :span="1" :offset="1">
+          <el-button type="primary" @click="addTask()">Add</el-button>
+        </el-col>
+      </el-row>
+    </div>
+    <div class="todo-list-task">
+      <el-row class="taskList" type="flex" justify="center">
+        <!-- 今日任务 -->
+        <el-col :span="8">
+          <h3 class="el-icon-paperclip">今日任务：</h3>
+          <check-table :items="items" @finish-row="finish" @to-move="move">
+            <template v-slot:add-btn="select">
+              <el-button size="mini" @click="checkMove(select)">
+                批量添加
+              </el-button>
+              <el-button size="mini" @click="del(items, select)">
+                批量删除
+              </el-button>
+            </template>
+          </check-table>
+        </el-col>
+        <el-divider direction="vertical"></el-divider>
+        <!-- 今日已完成 -->
+        <el-col :span="8">
+          <div class="finished">
+            <h3 span class="el-icon-finished">今日已完成：</h3>
+          </div>
+          <check-table :items="finishList">
+            <template v-slot:add-btn="select">
+              <el-button size="mini" @click="del(finishList, select)">
+                批量删除
+              </el-button>
+            </template>
+          </check-table>
+        </el-col>
+      </el-row>
+    </div>
   </div>
 </template>
-
 <script>
 import CheckTable from "@/components/CheckTable";
 export default {
@@ -76,7 +81,7 @@ export default {
   methods: {
     toTomato() {
       this.$router.push({
-        path:'/tomato',
+        path: "/tomato",
       });
     },
     //添加任务
@@ -148,7 +153,6 @@ export default {
   },
 };
 </script>
-
 <style scoped>
 h1 {
   font-weight: normal;
@@ -157,7 +161,7 @@ h1 {
 }
 .bg_img {
   margin: 20px;
-  height:350px;
+  height: 350px;
 }
 .taskList {
   margin-top: 50px;
