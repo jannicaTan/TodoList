@@ -1,13 +1,15 @@
 <template>
   <div class="tomato-container">
-    <router-link :to="{path:'/'}"><el-button >回去做任务！</el-button></router-link>
+    <router-link :to="{ path: '/' }">
+      <el-button>回去做任务！</el-button>
+    </router-link>
     <div class="tomato-title el-icon-alarm-clock">
       Mindful Clock
     </div>
     <div class="tomato-clock">
       <el-card class="tomato-clock-card" shadow="always">
         <!-- 倒计时展示  -->
-        <div class="countdown">
+        <div class="tomato-countdown">
           <span id="min">{{ minutes }}</span> :
           <span id="sec">{{ sec }}</span>
         </div>
@@ -160,7 +162,7 @@ export default {
       justify-content: center;
       align-items: center;
       background: rgba(242, 242, 242, 0.6);
-      .countdown {
+      .tomato-countdown {
         display: flex;
         justify-content: space-around;
         font-size: 80px;
